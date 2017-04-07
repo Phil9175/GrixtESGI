@@ -17,11 +17,13 @@ module.exports = (api) => {
         api.middlewares.bodyParser.json(),
         api.middlewares.isAuthenticated,
         api.middlewares.acl.ensure(["root", "admin"]),
+        api.middlewares.ensureFields(['manufacturer', 'model', 'year', 'numberOfSeat']),
         api.actions.carsmodels.update);
 
     router.delete('/:id',
         api.middlewares.isAuthenticated,
         api.middlewares.acl.ensure(["root", "admin"]),
+        api.middlewares.ensureFields(['id']),
         api.actions.carsmodels.remove);
         
     return router;
