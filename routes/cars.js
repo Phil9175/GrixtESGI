@@ -8,15 +8,21 @@ module.exports = (api) => {
 
     router.post('/',
         api.middlewares.bodyParser.json(),
+        api.middlewares.isAuthenticated,
+        api.middlewares.acl.ensure(["root", "admin"]),
+        api.middlewares.ensureFields(['modelOfCar', 'pickupId']),
         api.actions.cars.create);
 
     router.put('/:id',
         api.middlewares.bodyParser.json(),
+        api.middlewares.isAuthenticated,
+        api.middlewares.acl.ensure(["root", "admin"]),
+        api.middlewares.ensureFields(['modelOfCar', 'pickupId']),
         api.actions.cars.update);
 
     router.delete('/:id',
         api.middlewares.isAuthenticated,
-        api.middlewares.acl.ensure("root"),
+        api.middlewares.acl.ensure(["root", "admin"]),
         api.actions.cars.remove);
         
     return router;
