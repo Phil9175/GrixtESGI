@@ -35,8 +35,6 @@ module.exports = (api) => {
             }
         }
         
-        
-
         function save() {
             return car.save();
         }
@@ -109,9 +107,29 @@ module.exports = (api) => {
     }
 
     function remove(req, res, next) {
-        Car.findByIdAndRemove(req.params.id)
+	    
+	    Car.removeRent()
+	    		.then(findByIdAndRemove(red.params.id))
+	    		 .then(res.prepare(204))
+				 .catch(res.prepare(500));
+			
+			
+		function removeRent() {
+            return Rent.findOne({
+                id: req.params.id
+            })
+                .then(ensureNone);
+
+            function ensureNone(data) {
+                return (data) ? Promise.reject() : data;
+            }
+        }
+        
+        	 
+        /*Car.findByIdAndRemove(req.params.id)
             .then(res.prepare(204))
             .catch(res.prepare(500));
+            */
     }
 
    
