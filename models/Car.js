@@ -10,6 +10,10 @@ module.exports = (api) => {
          modelOfCar: {
             type: Schema.Types.ObjectId,
             ref: 'CarModels'
+        },
+        pickupId:{
+	        type: Schema.Types.ObjectId,
+	        ref: 'Pickup'
         }
     });
 
