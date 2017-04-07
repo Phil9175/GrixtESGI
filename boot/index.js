@@ -53,7 +53,11 @@ module.exports = (api) => {
             Role.findOne({
                 name: "root"
             })
-            .then(createRoot)
+            .then(createRoot);
+
+            Role.findOne({
+                name: "admin"
+            })
             .then(createAdmin);
 
             function createRoot(role) {

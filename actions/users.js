@@ -6,6 +6,7 @@ module.exports = (api) => {
 
     function create(req, res, next) {
         let user = new User(req.body);
+        
         user.password = sha1(user.password);
 
         return ensureEmailDoesNotExist()
@@ -38,14 +39,12 @@ module.exports = (api) => {
     }
 
     function list(req, res, next) {
-        setTimeout(()=> {
-            User.find()
-                .then(respond)
-                .catch(spread);
-        }, 5000);
+        User.find()
+            .then(respond)
+            .catch(spread);
 
         function respond(data) {
-            api.middlewares.cache.set('users', req.originalUrl, data);
+            // api.middlewares.cache.set('users', req.originalUrl, data);
             res.send(data);
         }
 
@@ -143,7 +142,6 @@ module.exports = (api) => {
             });
         }
     }
-
 
     return {
         create,

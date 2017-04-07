@@ -15,16 +15,18 @@ module.exports = (api) => {
         api.actions.users.create);
 
     router.put('/:id',
+        api.middlewares.isAuthenticated,
         api.middlewares.bodyParser.json(),
         api.actions.users.update);
 
-    router.delete('/:id', api.actions.users.remove);
+    router.delete('/:id',
+      api.middlewares.isAuthenticated,
+      api.actions.users.remove);
 
     router.put('/:id/assign/:roleId',
         api.middlewares.isAuthenticated,
         api.middlewares.acl.ensure(1),
-        api.actions.users.assign
-    );
+        api.actions.users.assign);
 
     return router;
 };

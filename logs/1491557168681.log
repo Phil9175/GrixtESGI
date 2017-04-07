@@ -1,0 +1,4 @@
+[Fri Apr 07 2017 11:26:31 GMT+0200 (CEST)]::[PUT]::[/users/58e759f6b64a970b45c469ae]::[401] 
+[Fri Apr 07 2017 11:26:51 GMT+0200 (CEST)]::[PUT]::[/auth/login]::[404] 
+[Fri Apr 07 2017 11:27:33 GMT+0200 (CEST)]::[POST]::[/auth/login]::[404] 
+[Fri Apr 07 2017 11:28:59 GMT+0200 (CEST)]::[POST]::[/auth/login]::[404] 
