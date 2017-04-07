@@ -18,19 +18,18 @@ module.exports = (api) => {
         api.middlewares.bodyParser.json(),
         api.middlewares.isAuthenticated,
         api.middlewares.acl.ensure(["root", "admin"]),
-        api.middlewares.ensureFields(['maxEmplacement', 'latitude', 'longitude', 'name']),
         api.actions.pickup.update);
 
     router.delete('/:id',
         api.middlewares.isAuthenticated,
         api.middlewares.acl.ensure(["root", "admin"]),
-        api.middlewares.ensureFields(['id']),
         api.actions.pickup.remove);
-    
+
     router.post('/:id/rent',
-                api.middlewares.bodyParser.json(),
-                api.middlewares.acl.ensure(3),
-                api.actions.pickup.rent);
+        api.middlewares.bodyParser.json(),
+        api.middlewares.isAuthenticated,
+        api.middlewares.acl.ensure(3),
+        api.actions.pickup.rent);
 
     return router;
 };
