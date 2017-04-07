@@ -6,10 +6,11 @@ module.exports = (api) => {
 
     function create(req, res, next) {
         let user = new User(req.body);
-        
+
         user.password = sha1(user.password);
 
         return ensureEmailDoesNotExist()
+            .then(assignRoleDefault)
             .then(save)
             .then(respond)
             .catch(spread);
@@ -23,6 +24,19 @@ module.exports = (api) => {
             function ensureNone(data) {
                 return (data) ? Promise.reject() : data;
             }
+        }
+
+        function assignRoleDefault() {
+          return Role.findOne({
+              name: "user"
+          })
+          .then(define);
+
+          function define(role) {
+            console.log(role.name);
+            user.role = role._id;
+            return user;
+          }
         }
 
         function save() {
