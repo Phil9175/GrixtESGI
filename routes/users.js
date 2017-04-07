@@ -4,9 +4,14 @@ module.exports = (api) => {
 
     router.get('/',
         // api.middlewares.cache.get,
+        api.middlewares.isAuthenticated,
+        api.middlewares.acl.ensure(1),
         api.actions.users.list);
 
-    router.get('/:id', api.actions.users.show);
+    router.get('/:id',
+    api.middlewares.isAuthenticated,
+    api.actions.users.owner,
+    api.actions.users.show);
 
     router.post('/',
         // api.middlewares.cache.clean('users'),
@@ -16,6 +21,7 @@ module.exports = (api) => {
 
     router.put('/:id',
         api.middlewares.isAuthenticated,
+        api.actions.users.owner,
         api.middlewares.bodyParser.json(),
         api.actions.users.update);
 

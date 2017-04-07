@@ -1,4 +1,5 @@
 const sha1 = require('sha1');
+const jwt = require('jsonwebtoken');
 
 module.exports = (api) => {
     const User = api.models.User;
@@ -6,10 +7,11 @@ module.exports = (api) => {
 
     function create(req, res, next) {
         let user = new User(req.body);
-        
+
         user.password = sha1(user.password);
 
         return ensureEmailDoesNotExist()
+            .then(assignRoleDefault)
             .then(save)
             .then(respond)
             .catch(spread);
@@ -23,6 +25,18 @@ module.exports = (api) => {
             function ensureNone(data) {
                 return (data) ? Promise.reject() : data;
             }
+        }
+
+        function assignRoleDefault() {
+          return Role.findOne({
+              name: "user"
+          })
+          .then(define);
+
+          function define(role) {
+            user.role = role._id;
+            return user;
+          }
         }
 
         function save() {
@@ -64,6 +78,9 @@ module.exports = (api) => {
     }
 
     function update(req, res, next) {
+        if(req.body.password)
+          req.body.password = sha1(req.body.password);
+
         User.findByIdAndUpdate(req.params.id, req.body)
             .then(res.prepare(204))
             .catch(res.prepare(500));
@@ -142,12 +159,55 @@ module.exports = (api) => {
         }
     }
 
+    function owner(req, res, next) {
+        const encryptedToken = req.headers.authorization;
+
+        if(!encryptedToken)
+            return unauthorized();
+
+        jwt.verify(encryptedToken, api.settings.security.secret, (err, token) => {
+            if (err || !token || !token.userId) {
+                return unauthorized();
+            }
+
+            User.findById(token.userId)
+                .select("+role")
+                .then(ensureOne)
+                .then(authorize)
+                .catch(unauthorized);
+
+            function ensureOne(user) {
+                return (user) ? user : Promise.reject();
+            }
+
+            function authorize(user) {
+
+                Role.findById(user.role)
+                    .then(checkAdmin);
+
+                function checkAdmin(role) {
+                  if(role.level > 1 && token.userId != req.params.id)
+                    return unauthorized();
+                }
+
+                req.userId = token.userId;
+                req.role = token.role;
+                next();
+            }
+        });
+
+        function unauthorized() {
+            return res.status(401).send('unauthorized');
+        }
+    }
+
     return {
         create,
         list,
         show,
         update,
         remove,
-        assign
+        assign,
+        owner
     };
 };
