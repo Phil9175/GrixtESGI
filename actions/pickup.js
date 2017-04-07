@@ -39,7 +39,7 @@ module.exports = (api) => {
             .then(checkFreeSpotInLetPickup)
             .then(processRent);
 
-        function checkFreeSpotInLetPickup{
+        function checkFreeSpotInLetPickup(){
                 // On vérifie si il y'a des places dispos dans le dépot de fin à la date de fin
         }
 
