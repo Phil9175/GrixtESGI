@@ -6,6 +6,7 @@ module.exports = (api) => {
 
     function create(req, res, next) {
         let user = new User(req.body);
+        console.log(user);
         user.password = sha1(user.password);
 
         return ensureEmailDoesNotExist()
@@ -45,7 +46,7 @@ module.exports = (api) => {
         }, 5000);
 
         function respond(data) {
-            api.middlewares.cache.set('users', req.originalUrl, data);
+            // api.middlewares.cache.set('users', req.originalUrl, data);
             res.send(data);
         }
 
@@ -143,7 +144,6 @@ module.exports = (api) => {
             });
         }
     }
-
 
     return {
         create,

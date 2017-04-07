@@ -23,8 +23,7 @@ module.exports = (api) => {
     router.put('/:id/assign/:roleId',
         api.middlewares.isAuthenticated,
         api.middlewares.acl.ensure(1),
-        api.actions.users.assign
-    );
+        api.actions.users.assign);
 
     return router;
 };
