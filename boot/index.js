@@ -6,6 +6,7 @@ module.exports = (api) => {
 
     const User = api.models.User;
     const root = api.settings.acl.root;
+    const admin = api.settings.acl.admin;
 
     loadRoles()
         .then(loadUser);
@@ -58,10 +59,13 @@ module.exports = (api) => {
                 let user = new User(root);
                 user.password = sha1(user.password);
                 user.role = role._id.toString();
-                return user.save();
+                user.save();
+
+                user = new User(admin);
+                user.password = sha1(user.password);
+                user.role = role._id.toString();
+                user.save();
             }
         }
     }
 };
-
-

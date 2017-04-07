@@ -3,7 +3,11 @@ module.exports = (api) => {
     const Schema = api.mongoose.Schema;
 
     let UserSchema = Schema({
-        name: {
+        first_name: {
+            type: String,
+            default: 'unknown'
+        },
+        last_name: {
             type: String,
             default: 'unknown'
         },
