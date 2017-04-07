@@ -10,6 +10,6 @@ require('./routes')(api);               console.log('initializing routes...');
 // require('./static')(api);               console.log('initializing static files...');
 
 api.listen(process.env.PORT);
-console.log(`API listening on port ${process.env.PORT}`);
+console.log(`API listening on port ${api.settings.port}`);
 
-require('./boot')(api);                 console.log('\n executing boot scripts...');
+// require('./boot')(api);                 console.log('\n executing boot scripts...');

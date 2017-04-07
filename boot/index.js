@@ -32,7 +32,7 @@ module.exports = (api) => {
                 new Role(role)
                     .save()
                     .then(() => {
-                        console.log('created.');
+                        console.log('Created.');
                     });
             }
         }
@@ -53,18 +53,21 @@ module.exports = (api) => {
             Role.findOne({
                 name: "root"
             })
-                .then(createUser);
+            .then(createRoot)
+            .then(createAdmin);
 
-            function createUser(role) {
+            function createRoot(role) {
                 let user = new User(root);
                 user.password = sha1(user.password);
                 user.role = role._id.toString();
-                user.save();
+                return user.save();
+            }
 
+            function createAdmin(role) {
                 user = new User(admin);
                 user.password = sha1(user.password);
                 user.role = role._id.toString();
-                user.save();
+                return user.save();
             }
         }
     }
