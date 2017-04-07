@@ -3,6 +3,7 @@ module.exports = (api) => {
     const CarModels = api.models.CarModels;
     const User = api.models.User;
     const Pickup = api.models.Pickup;
+	const Rent = api.models.Rent;
 
     function create(req, res, next) {
         let car = new Car(req.body);
@@ -37,7 +38,20 @@ module.exports = (api) => {
         }
         
         function save() {
-            return car.save();
+            car.save()
+            .then(addRent);
+            
+            function addRent(car) {
+	            let date = new Date;	            
+	            let rent = new Rent();
+	            rent.car = car._id;
+	            rent.beginDate = date.toString();
+	            rent.endDate = date.toString();
+	            rent.pickupPlace = car.pickupId;
+	            rent.pickupLet = car.pickupId;
+	            rent.save();
+		        return true;
+            }
         }
 
         function respond() {
