@@ -2,7 +2,7 @@ module.exports = (api) => {
     const mongoose = api.mongoose;
     const Schema = api.mongoose.Schema;
 
-    let Rent = Schema({
+    let RentSchema = Schema({
         car: {
             type: Schema.Types.ObjectId,
             ref: 'Car'
