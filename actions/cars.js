@@ -1,5 +1,6 @@
 module.exports = (api) => {
     const Car = api.models.Car;
+    const CarModels = api.models.CarModels;
     const User = api.models.User;
     const Pickup = api.models.Pickup;
 
