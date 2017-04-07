@@ -1,15 +1,29 @@
 module.exports = (api) => {
     const Car = api.models.Car;
     const User = api.models.User;
+    const Pickup = api.models.Pickup;
 
     function create(req, res, next) {
         let car = new Car(req.body);
         
         return ensureCarModelDoesNotExist()
+        	.then(ensurePickupPlaceExist)
             .then(save)
             .then(respond)
             .catch(spread);
 
+
+		function ensurePickupPlaceExist(){
+			 return Pickup.findOne({
+                id: req.body.pickupId
+            })
+                .then(ensureNone);
+
+            function ensureNone(data) {
+                return (data) ? Promise.reject() : data;
+            }
+		}
+		
         function ensureCarModelDoesNotExist() {
             return CarModels.findOne({
                 id: req.body.modelOfCar
@@ -20,6 +34,8 @@ module.exports = (api) => {
                 return (data) ? Promise.reject() : data;
             }
         }
+        
+        
 
         function save() {
             return car.save();
