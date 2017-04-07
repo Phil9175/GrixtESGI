@@ -16,6 +16,7 @@ module.exports = (api) => {
 
     router.put('/:id',
         api.middlewares.isAuthenticated,
+        api.actions.users.owner,
         api.middlewares.bodyParser.json(),
         api.actions.users.update);
 
