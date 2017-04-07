@@ -9,9 +9,6 @@ module.exports = (api) => {
         const email = req.body.email;
         const password = sha1(req.body.password);
 
-        console.log(email);
-        console.log(password);
-
         User.findOne({
             email: email,
             password: password

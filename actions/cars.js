@@ -1,15 +1,30 @@
 module.exports = (api) => {
     const Car = api.models.Car;
+    const CarModels = api.models.CarModels;
     const User = api.models.User;
+    const Pickup = api.models.Pickup;
 
     function create(req, res, next) {
         let car = new Car(req.body);
         
         return ensureCarModelDoesNotExist()
+        	.then(ensurePickupPlaceExist)
             .then(save)
             .then(respond)
             .catch(spread);
 
+
+		function ensurePickupPlaceExist(){
+			 return Pickup.findOne({
+                id: req.body.pickupId
+            })
+                .then(ensureNone);
+
+            function ensureNone(data) {
+                return (data) ? Promise.reject() : data;
+            }
+		}
+		
         function ensureCarModelDoesNotExist() {
             return CarModels.findOne({
                 id: req.body.modelOfCar
@@ -20,7 +35,7 @@ module.exports = (api) => {
                 return (data) ? Promise.reject() : data;
             }
         }
-
+        
         function save() {
             return car.save();
         }
@@ -30,7 +45,7 @@ module.exports = (api) => {
         }
 
         function spread() {
-            res.status(500).send("car.model.not.found");
+            res.status(500).send("car.model.or.pickup.place.not.found");
         }
     }
 
@@ -49,10 +64,22 @@ module.exports = (api) => {
     function update(req, res, next) {
 	            
         return ensureCarModelDoesNotExist()
+        	.then(ensurePickupPlaceExist)
             .then(findByIdAndUpdate)
             .then(respond)
             .catch(spread);
 
+		function ensurePickupPlaceExist(){
+			 return Pickup.findOne({
+                id: req.body.pickupId
+            })
+                .then(ensureNone);
+
+            function ensureNone(data) {
+                return (data) ? Promise.reject() : data;
+            }
+		}
+		
         function ensureCarModelDoesNotExist() {
             return CarModels.findOne({
                 id: req.body.modelOfCar
@@ -75,15 +102,35 @@ module.exports = (api) => {
         }
 
         function spread() {
-            res.status(404).send("car.model.not.found");
+            res.status(500).send("car.model.or.pickup.place.not.found");
         }
        
     }
 
     function remove(req, res, next) {
-        Car.findByIdAndRemove(req.params.id)
+	    
+	    Car.removeRent()
+	    		.then(findByIdAndRemove(red.params.id))
+	    		 .then(res.prepare(204))
+				 .catch(res.prepare(500));
+			
+			
+		function removeRent() {
+            return Rent.findOne({
+                id: req.params.id
+            })
+                .then(ensureNone);
+
+            function ensureNone(data) {
+                return (data) ? Promise.reject() : data;
+            }
+        }
+        
+        	 
+        /*Car.findByIdAndRemove(req.params.id)
             .then(res.prepare(204))
             .catch(res.prepare(500));
+            */
     }
 
    

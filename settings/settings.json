@@ -29,12 +29,8 @@
                 "level": 1
             },
             {
-                "name": "manager",
+                "name": "user",
                 "level": 2
-            },
-            {
-                "name": "lambda",
-                "level": 3
             }
         ]
     },
