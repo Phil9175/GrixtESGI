@@ -3,13 +3,13 @@ const router = require('express').Router();
 module.exports = (api) => {
 
     router.get('/',
-        api.middlewares.cache.get,
+        // api.middlewares.cache.get,
         api.actions.users.list);
 
     router.get('/:id', api.actions.users.show);
 
     router.post('/',
-        api.middlewares.cache.clean('users'),
+        // api.middlewares.cache.clean('users'),
         api.middlewares.bodyParser.json(),
         api.middlewares.ensureFields(['email', 'password']),
         api.actions.users.create);
