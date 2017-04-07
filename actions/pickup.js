@@ -107,45 +107,82 @@ module.exports = (api) => {
                 let rentFinishingInPickup = Rent.find()
                     .populate('Car')
                     .sort(rentOrder.beginDate, -1)
-                    .where('endDate').lt(rentOrder.beginDate);
+                    .where('endDate').lt(rentOrder.beginDate)
+                    .where('availableSeat').gt(0);
                 /*
                 rentFinishingInPickup.reduce(function(accumulateur, valeurCourante, index, array){
                     return accumulateur + valeurCourante;
                 });
                 */
                 let rentCollection = [];
-                for (let rent of rentFinishingInPickup) {
+                for (let rent of rentFinishingInPickup){
                     // si pickuplet == rentorder.pickupplace
                         // alors on ajoute a carCollection
+                  if(rent.pickupLet == rentOrder.pickupPlace){
+                    rentCollection.push(rent);
+                  }
                 }
                 return rentCollection;
             }
 
             function ensureCarPool(rentCollection) {
-                // retourne une voiture de car pool et arrete le traitement de cette promesse 
+                // retourne une voiture de car pool et arrete le traitement de cette promesse
                 // sinon continu le traitement de la promesse avec la même collection passé en paramètres
+
+                let carPool = [];
+
                 for (let rent of rentCollection) {
                     // On garde les rent qui ont le plus petit availableSeat étant plus grand que le rentOrder.numberPlace
                     // ainsi que les 2 dates correspondent (beginDate)(endDate)
+                    let error = false;
+
+                    if(rent.pickupPlace != rentOrder.pickupPlace){
+                      error = true;
+                    } else if(rent.pickupLet != rentOrder.pickupLet){
+                      error = true;
+                    } else if(rent.bedginDate != rentOrder.bedginDate){
+                      error = true;
+                    } else if(rent.endDate != rentOrder.endDate){
+                      error = true;
+                    } else if(rent.availableSeat < rentOrder.numberPlace){
+                      error = true;
+                    }
+
+                    if(!error){
+                      carPool.push(rent);
+                    }
+                }
+
+                if(carPool && carPool.lenght > 0){
+                  return carPool;
+                } else{
+                  return rentCollection;
                 }
 
             }
 
-            function filterCarAvailableUntilEndDate() {
-                for (let rent of rentCollection) {
-                    // On supprime les rent qui où l'on trouve une rent avec une beginDate > ) 
-                    // la rentOrder.endDate sur le même véhicule
+            function filterCarAvailableUntilEndDate(rentCollection) {
+
+              let carAvailableUntilEndDate = [];
+
+              for (let rent of rentCollection) {
+                if(rent.beginDate < rentOrder.endDate){
+                  carAvailableUntilEndDate.push(rent);
                 }
-                // filtre la collection de voitures disponibles pendant toutes la session (on vérifie si il n'y a pas une location sur les voitures qui commence avant la fin de la session)
+                  // On supprime les rent qui où l'on trouve une rent avec une beginDate >= rentOrder.endDate  )
+              }
+
+              return carAvailableUntilEndDate;
+              // filtre la collection de voitures disponibles pendant toutes la session (on vérifie si il n'y a pas une location sur les voitures qui commence avant la fin de la session)
             }
 
             function chooseRandomlyOne(carCollection){
                 // s'il reste plusieurs voitures dans la collection bloque le choix à une
-                return carCollection[Math.floor(Math.random()*carCollection.length)];
+                return carCollection[0];
             }
-            
+
         }
-        
+
         // On ajoute une location pour un user
         function processRent() {
             createOrUpdateRent()
