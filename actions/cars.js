@@ -46,7 +46,7 @@ module.exports = (api) => {
         }
 
         function spread() {
-            res.status(500).send("car.model.not.found");
+            res.status(500).send("car.model.or.pickup.place.not.found");
         }
     }
 
@@ -65,10 +65,22 @@ module.exports = (api) => {
     function update(req, res, next) {
 	            
         return ensureCarModelDoesNotExist()
+        	.then(ensurePickupPlaceExist)
             .then(findByIdAndUpdate)
             .then(respond)
             .catch(spread);
 
+		function ensurePickupPlaceExist(){
+			 return Pickup.findOne({
+                id: req.body.pickupId
+            })
+                .then(ensureNone);
+
+            function ensureNone(data) {
+                return (data) ? Promise.reject() : data;
+            }
+		}
+		
         function ensureCarModelDoesNotExist() {
             return CarModels.findOne({
                 id: req.body.modelOfCar
@@ -91,7 +103,7 @@ module.exports = (api) => {
         }
 
         function spread() {
-            res.status(404).send("car.model.not.found");
+            res.status(500).send("car.model.or.pickup.place.not.found");
         }
        
     }

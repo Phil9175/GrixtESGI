@@ -44,7 +44,6 @@ module.exports = (api) => {
             .catch(spread);
 
         function respond(data) {
-            // api.middlewares.cache.set('users', req.originalUrl, data);
             res.send(data);
         }
 
