@@ -3,13 +3,13 @@ module.exports = (api) => {
     const Schema = api.mongoose.Schema;
 
     let CarSchema = Schema({
-        model: {
-            type: String,
-            default: 'unknown'
-        },
         renters: [{
             type: Schema.Types.ObjectId,
             ref: 'User'
+        }],
+         renters: [{
+            type: Schema.Types.ObjectId,
+            ref: 'CarModels'
         }]
     });
 
