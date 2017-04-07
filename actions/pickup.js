@@ -49,32 +49,56 @@ module.exports = (api) => {
             // verifie si l'utilisateur à deja une location aux dates indiquées
         }
 
-        function ensureInfo() {
+        function ensureInfo(pickupPlace) {
+
             // verifie si les data dans notre post sont bonnes
-            ensurePickup()
+            ensurePickupLet()
                 .then(ensureCarModel)
                 .then(ensureDate)
                 .then(ensureNumberPlace);
 
-                function ensurePickup(dataPosted){
-                    // verifie si les deux depots existe
-                    return dataPosted;
+                function ensurePickupLet(){
+                    // verifie si le depot de retour existe
+                    // console.log(req.body.pickupLet);
+
+                    Pickup.findById(req.body.pickupLet)
+                        .then(check);
+
+                    function check(pickupLet) {
+                        console.log("ici");
+                
+                      if (pickupLet) {
+                        console.log("ok");
+                            rentOrder.pickupPlace = pickupPlace;
+                            rentOrder.pickupLet = pickupLet;
+                            // next();
+
+                            return rentOrder;
+                        }
+                    }
                 }
 
                 function ensureCarModel(dataPosted){
                     // verifie si le model de la voiture existe
-                    return dataPosted;
+                    // Pickup.
+                    // console.log("oui");
+                    // console.log(dataPosted);
+                    /*if (dataPosted) {
+                        console.log(dataPosted);
+
+                    }
+                    else
+                        Promise.reject();*/
+
+                    // console.log(dataPosted);
                 }
 
                 function ensureDate(dataPosted){
                     // verifie les deux dates
-                    return dataPosted;
                 }
 
                 function ensureNumberPlace(dataPosted){
                     // verifie si nombre place a ete renseigné, si nombre place pas superieur au nombre de place disponible sur le model
-                    rentOrder = dataPosted;
-                    return dataPosted;
                 }
 
         }
