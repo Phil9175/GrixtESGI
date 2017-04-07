@@ -12,8 +12,8 @@ module.exports = (api) => {
             default: 'unknown'
         },
         year: {
-	        type: String,
-	        default: '2010'
+	        type: Number,
+	        default: 2010
         },
         numberOfPlaces: {
 	        type: Number,

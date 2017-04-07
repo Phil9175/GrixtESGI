@@ -7,8 +7,9 @@ module.exports = (api) => {
     api.models = {
         User: require('./User')(api),
         Car: require('./Car')(api),
-        Car: require('./CarModels')(api),
+        CarModels: require('./CarModels')(api),
         Role: require('./Role')(api),
-        Pointdepot: require('./Pickup')(api)
+        Rent: require('./Rent')(api),
+        Pickup: require('./Pickup')(api)
     };
 };

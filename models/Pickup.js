@@ -13,8 +13,7 @@ module.exports = (api) => {
         },
         longitude: {
             type: String,
-            required: true,
-            select: false
+            required: true
         },
         name: {
             type: String,
