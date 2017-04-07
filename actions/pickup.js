@@ -33,6 +33,8 @@ module.exports = (api) => {
     }
 
     function rent(req, res, next) {
+        let rentOrder = {};
+
         ensureInfo()
             .then(ensureUserCanRent)
             .then(getACar)
@@ -56,18 +58,23 @@ module.exports = (api) => {
 
                 function ensurePickup(dataPosted){
                     // verifie si les deux depots existe
+                    return dataPosted;
                 }
 
                 function ensureCarModel(dataPosted){
                     // verifie si le model de la voiture existe
+                    return dataPosted;
                 }
 
                 function ensureDate(dataPosted){
                     // verifie les deux dates
+                    return dataPosted;
                 }
 
                 function ensureNumberPlace(dataPosted){
                     // verifie si nombre place a ete renseigné, si nombre place pas superieur au nombre de place disponible sur le model
+                    rentOrder = dataPosted;
+                    return dataPosted;
                 }
 
         }
@@ -77,29 +84,64 @@ module.exports = (api) => {
             // on se trimballe une collection de voiture dans cette promesse
             // la promesse doit à la fin retourner une voiture à la fin ou rien, si rien pas de location possible
             findCarOfModelCar()
+                .then(ensureOne("no.available.car.for.this.model"))
                 .then(getCarInPickupAtStartRentDate)
+                .then(ensureOne("no.available.car.in.pickup.place"))
                 .then(ensureCarPool)
                 .then(filterCarAvailableUntilEndDate)
-                .then(chooseRandomlyOne);
+                .then(ensureOne("no.available.car.for.these.dates"))
+                .then(chooseRandomlyOne)
+                .catch(res.prepare(404));
+
+            function ensureOne(carCollection, errorMsg){
+                return (carCollection) ? carCollection : Promise.reject(errorMsg);
+            }
 
             function findCarOfModelCar() {
                 // retourne la collection de voiture du modèle demandée
+                return Car.find({"modelOfCar":rentOrder.carModel._id});
             }
-            function getCarInPickupAtStartRentDate(){
+            function getCarInPickupAtStartRentDate(carCollection){
                 // filtre la collection de voitures dans le depot à la date de debut
+
+                let rentFinishingInPickup = Rent.find()
+                    .populate('Car')
+                    .sort(rentOrder.beginDate, -1)
+                    .where('endDate').lt(rentOrder.beginDate);
+                /*
+                rentFinishingInPickup.reduce(function(accumulateur, valeurCourante, index, array){
+                    return accumulateur + valeurCourante;
+                });
+                */
+                let rentCollection = [];
+                for (let rent of rentFinishingInPickup) {
+                    // si pickuplet == rentorder.pickupplace
+                        // alors on ajoute a carCollection
+                }
+                return rentCollection;
             }
 
-            function ensureCarPool() {
+            function ensureCarPool(rentCollection) {
                 // retourne une voiture de car pool et arrete le traitement de cette promesse 
                 // sinon continu le traitement de la promesse avec la même collection passé en paramètres
+                for (let rent of rentCollection) {
+                    // On garde les rent qui ont le plus petit availableSeat étant plus grand que le rentOrder.numberPlace
+                    // ainsi que les 2 dates correspondent (beginDate)(endDate)
+                }
+
             }
 
             function filterCarAvailableUntilEndDate() {
+                for (let rent of rentCollection) {
+                    // On supprime les rent qui où l'on trouve une rent avec une beginDate > ) 
+                    // la rentOrder.endDate sur le même véhicule
+                }
                 // filtre la collection de voitures disponibles pendant toutes la session (on vérifie si il n'y a pas une location sur les voitures qui commence avant la fin de la session)
             }
 
-            function chooseRandomlyOne(){
+            function chooseRandomlyOne(carCollection){
                 // s'il reste plusieurs voitures dans la collection bloque le choix à une
+                return carCollection[Math.floor(Math.random()*carCollection.length)];
             }
             
         }
