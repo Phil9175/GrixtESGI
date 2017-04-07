@@ -15,7 +15,7 @@ module.exports = (api) => {
 	        type: Number,
 	        default: 2010
         },
-        numberOfPlaces: {
+        numberOfSeat: {
 	        type: Number,
 	        default: 4
         }
