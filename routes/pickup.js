@@ -1,3 +1,4 @@
+
 const router = require('express').Router();
 
 module.exports = (api) => {
@@ -25,6 +26,11 @@ module.exports = (api) => {
         api.middlewares.acl.ensure(["root", "admin"]),
         api.middlewares.ensureFields(['id']),
         api.actions.pickup.remove);
-        
+    
+    router.post('/:id/rent',
+                api.middlewares.bodyParser.json(),
+                api.middlewares.acl.ensure(3),
+                api.actions.pickup.rent);
+
     return router;
 };
