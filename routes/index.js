@@ -6,4 +6,5 @@ module.exports = (api) => {
     api.use('/cars', require('./cars')(api));
     api.use('/carsmodels', require('./carsmodels')(api));
     api.use('/auth', require('./auth')(api));
+    api.use('/pickup', require('./pickup')(api));
 };

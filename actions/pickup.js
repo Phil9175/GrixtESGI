@@ -1,6 +1,5 @@
 module.exports = (api) => {
-    const Car = api.models.Car;
-    const User = api.models.User;
+    const Pickup = api.models.Pickup;
 
     function create(req, res, next) {
         let car = new Car(req.body);
