@@ -18,11 +18,7 @@ module.exports = (api) => {
         numberOfPlaces: {
 	        type: Number,
 	        default: 4
-        },
-        renters: [{
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        }]
+        }
     });
 
     return mongoose.model('CarModels', CarModelsSchema);
